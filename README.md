@@ -1,33 +1,29 @@
-This python project is designed to automate the creation of a budget by filling in a simple CSV file with two columns of data.
+# Home Budget Web Application 
 
-The simple data entry is designed to be very flexable. When entering the Raw data this way, a template can be created to quickly fill in new data. 
+This python project is designed to create an easy to use web application that aggragates entered data for the user to create a Budget that includes totals and average monthly spending. 
 
-Project Goals:
+This project replaces a 2019 excel file that was initial used for this process. 
+
+## Project Goals:
+With the basic outline created useing SQLAlchemy and Flask, adding tests and features to the application is the next milestone. 
+
 
 
 ## Easy data entry to start. 
-* New cost or income, just add a line anywhere in the form.
-* Cost items start with cost_.
-* Income items start with income_.
-* Savings are defined by savings_ and goal_. 
-* Define hourly or annual income.
-* Income from multiple sources are supported. 
-* Costs can be lumped into one or spread out. 
-    * key words may be defined and added too. 
+Data entry is easy, and is restricted to three fields to start with, can add more in the future. 
 
 ## Easy to read output. 
-* Using pandas and excelwriter to output an easy to read and understand excel file.
-* Other formats, including auto upload into google docs.
-* Automated output, if data is manually added tothe excel file it will still update in line. 
+
+Output is just raw numbers at this time.
 
 # TODO
+ 
+Savings Slider, a slide bar that changes how much can and should be saved in a interactive way. 
+(current thoughts are a slider on top and a piechart on teh bottom showing monthly income vs. savings, vs expenses)
 
-## Integrations with personal products via optional API calls.
+## Notes
 
-## Website Interface via Flask webportal
-
-## Database integration with SQLAlchemy instead of csv file.
-
-## 
+This was created to be simiple but useful to me, it is a work in progress and I'll maintain this as long as I am using it. 
+This project is the first time I'm using HTML in 15 years and I've not used Flask before. SQLAlchemy is also anew library for me.  
 
 
