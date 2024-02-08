@@ -1,0 +1,5 @@
+# .gitignore
+budget/__pycache__/*
+budget/migrate/*
+data/budget.db
+.env

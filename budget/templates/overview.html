@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Data View</title>
+    <!-- External Custom CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Nav Bar -->
+    <nav>
+        <ul class="nav">
+            <li><a href="/" >Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+    
+    <header>
+        <h1 class="cool-heading h1">Budget Overview</h1>
+    </header>  
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Expenses Table -->
+        <h2 class="cool-heading h2">Incomes</h2>
+        <table class="table">
+            <!-- Table Head -->
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Frequency</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            {% for income in data['incomes'] %}
+            <tr>
+                <td>{{ income.description }}</td>
+                <td>{{ income.amount }}</td>
+                <td>{{ income.frequency }}</td>
+                <td>
+                    <button class="cool-btn-icon" onclick="openEditModal('income', '{{ income.id }}', '{{ income.description }}', '{{ income.amount }}', '{{ income.frequency }}')"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="cool-btn-icon" onclick="openDeleteModal('income', '{{ income.id }}', '{{ income.description }}', '{{ income.amount }}', '{{ income.frequency }}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <button class="cool-btn-icon" onclick="openAddModal('income')">Add Income</button>
+    </div>
+    <br>
+    <div class="container">
+        <h2 class="cool-heading h2">Expenses</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Frequency</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            {% for expense in data['expenses'] %}
+            <tr>
+                <td>{{ expense.description }}</td>
+                <td>{{ expense.amount }}</td>
+                <td>{{ expense.frequency }}</td>
+                <td>
+                    <button class="cool-btn-icon" onclick="openEditModal('expense', '{{ expense.id }}', '{{ expense.description }}', '{{ expense.amount }}', '{{ expense.frequency }}')"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="cool-btn-icon" onclick="openDeleteModal('expense', '{{ expense.id }}', '{{ expense.description }}', '{{ expense.amount }}', '{{ expense.frequency }}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button class="cool-btn-icon" onclick="openAddModal('expense')">Add Expense</button>
+    </div>
+    <br>
+    <div class="container">
+        <h2 class="cool-heading h2"> Withholdings </h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Frequency</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            {% for withholding in data['withholdings'] %}
+            <tr>
+                <td>{{ withholding.description }}</td>
+                <td>{{ withholding.amount }}</td>
+                <td>{{ withholding.frequency }}</td>
+                <td>
+                    <button class="cool-btn-icon" onclick="openEditModal('withholding', '{{ withholding.id }}', '{{ withholding.description }}', '{{ withholding.amount }}')"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="cool-btn-icon" onclick="openDeleteModal('withholding', '{{ withholding.id }}', '{{ withholding.description }}', '{{ withholding.amount }}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button class="cool-btn-icon" onclick="openAddModal('withholding')">Add Withholding</button>
+    </div>
+    <br>
+    <div class="container">
+        <h2 class="cool-heading h2"> Investments </h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            {% for investment in data['investments'] %}
+            <tr>
+                <td>{{ investment.description }}</td>
+                <td>{{ investment.amount }}</td>
+                <td>
+                    <button class="cool-btn-icon" onclick="openEditModal('investment', '{{ investment.id }}', '{{ investment.description }}', '{{ investment.amount }}')"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="cool-btn-icon" onclick="openDeleteModal('investment', '{{ investment.id }}', '{{ investment.description }}', '{{ investment.amount }}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button class="cool-btn-icon" onclick="openAddModal('investment')">Add Investment</button>
+    </div>
+    <br>
+    <div class="container">
+        <h2 class="cool-heading h2"> Assets </h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            {% for asset in data['assets'] %}
+            <tr>
+                <td>{{ asset.description }}</td>
+                <td>{{ asset.amount }}</td>
+                <td>
+                    <button class="cool-btn-icon" onclick="openEditModal('asset', '{{ asset.id }}', '{{ asset.description }}', '{{ asset.amount }}')"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="cool-btn-icon" onclick="openDeleteModal('asset', '{{ asset.id }}', '{{ asset.description }}', '{{ asset.amount }}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button class="cool-btn-icon" onclick="openAddModal('asset')">Add Asset</button>
+    </div>
+     <!-- Add Item Modal -->
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addItemModalLabel">Add Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Edit form -->
+                    <form id="addItemForm">
+                        <input type="hidden" id="addItemType" name="type">
+
+                        <div class="form-group">
+                            <label for="addItemDescription">Description</label>
+                            <input type="text" class="form-control" id="addItemDescription">
+                        </div>
+                        <div class="form-group">
+                            <label for="addItemAmount">Amount</label>
+                            <input type="number" class="form-control" id="addItemAmount">
+                        </div>
+                        <div class="form-group">
+                            <label for="addItemFrequency" id="addItemFrequencyLabel">Frequency</label>
+                            <select name="Frequency" id="addItemFrequency">
+                                <option value="Annually" selected>Annually</option>
+                                <option value="Bi-Annually">Bi-Annually</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Monthly">Monthly</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitAdd()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Edit form -->
+                    <form id="editItemForm">
+                        <input type="hidden" id="itemType" name="type">
+                        <input type="hidden" id="itemId" name="id">
+
+                        <div class="form-group">
+                            <label for="itemDescription">Description</label>
+                            <input type="text" class="form-control" id="itemDescription">
+                        </div>
+                        <div class="form-group">
+                            <label for="itemAmount">Amount</label>
+                            <input type="number" class="form-control" id="itemAmount">
+                        </div>
+                        <div class="form-group">
+                            <label for="itemFrequency">Frequency</label>
+                            <select name="Frequency" id="itemFrequency">
+                                <option value="Annually" selected>Annually</option>
+                                <option value="Bi-Annually">Bi-Annually</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Monthly">Monthly</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitEdit()">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Item Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteItemModalLabel">Delete Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Delete form -->
+                    <form id="deleteItemForm">
+                        <input type="hidden" id="deleteItemType" name="type">
+                        <input type="hidden" id="deleteItemId" name="id">
+
+                        <div class="form-group">
+                            <label for="deleteItemDescription">Description</label>
+                            <input type="text" class="form-control" id="deleteItemDescription" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="deleteItemAmount">Amount</label>
+                            <input type="number" class="form-control" id="deleteItemAmount" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="deleteItemFrequency">Frequency</label>
+                            <select name="Frequency" id="deleteItemFrequency" readonly>
+                                <option value="Annually" selected>Annually</option>
+                                <option value="Bi-Annually">Bi-Annually</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Monthly">Monthly</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitDelete()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Add an Entry -->
+    <script>
+        function openAddModal(type) {            
+            // Populate the modal fields
+            
+            if (type === 'asset' || type === 'investment') {
+                document.getElementById('addItemFrequencyLabel').style.display = 'none';
+                document.getElementById('addItemFrequency').style.display = 'none';
+            } else {
+                document.getElementById('addItemFrequencyLabel').style.display = 'block';
+                document.getElementById('addItemFrequency').style.display = 'block';
+            }
+
+            $('#addItemType').val(type);
+            
+
+
+            // Open the modal
+            $('#addModal').modal('show');
+        }
+
+        function submitAdd() {
+            var type = $('#addItemType').val();
+            var description = $('#addItemDescription').val();
+            var amount = $('#addItemAmount').val();
+            var frequency = $('#addItemFrequency').val();
+
+            $.ajax({
+                url: '/add',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({type: type, description: description, amount: amount, frequency:frequency }),
+                success: function(response) {
+                    // Handle success
+                    $('#addModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    // Handle error
+                    console.error("Error in updating item: ", error);
+                }
+            });
+        }
+    </script> 
+    <!-- Edit An Entry -->
+    <script>
+        function openEditModal(type, id, description, amount, frequency) {
+            // Populate the modal fields
+            $('#itemType').val(type);
+            $('#itemId').val(id);
+            $('#itemDescription').val(description);
+            $('#itemAmount').val(amount.replace(/[$,]/g, ''));
+            $('#itemFrequency').val(frequency);
+
+            // Open the modal
+            $('#editModal').modal('show');
+        }
+
+        function submitEdit() {
+            var type = $('#itemType').val();
+            var id = $('#itemId').val();
+            var description = $('#itemDescription').val();
+            var amount = $('#itemAmount').val();
+            var frequency = $('#itemFrequency').val();
+
+            $.ajax({
+                url: '/edit/'+ id,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({type: type, description: description, amount: amount, frequency: frequency}),
+                success: function(response) {
+                    // Handle success
+                    $('#editModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    // Handle error
+                    console.error("Error in updating item: ", error);
+                }
+            });
+        }
+    </script> 
+    <!-- Delete an entry -->
+    <script>
+        function openDeleteModal(type, id, description, amount, frequency) {
+            // Set the form action based on the type
+            // Populate the modal fields
+            $('#deleteItemType').val(type);
+            $('#deleteItemId').val(id);
+            $('#deleteItemDescription').val(description);
+            $('#deleteItemAmount').val(amount.replace(/[$,]/g, ''));
+            $('#deleteItemFrequency').val(frequency);
+
+            // Open the modal
+            $('#deleteModal').modal('show');
+        }
+        function submitDelete(){
+            var type = $('#deleteItemType').val();
+            var id = $('#deleteItemId').val();
+
+            $.ajax({
+                url: '/delete/' + id,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({type: type, id: id }),
+                success: function(response) {
+                    // Handle success
+                    $('#deleteModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    // Handle error
+                    console.error("Error in deleteing item: ", error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
