@@ -2,7 +2,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import case, func
 
 # local
-from models import db, Income, Expense, Investments, Withholdings, Assets
+from budget.models import db, Income, Expense, Investments, Withholdings, Assets
 
 # Budget functions
 class Functions():
@@ -30,12 +30,21 @@ class Functions():
             # log error and/or notify
             print(f"Database error occurred: {e}")
 
+    def edit(editItem):
+        try:
+            db.session.add(editItem)
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            # log error and/or notify
+            print(f"Database error occurred: {e}")
+            
     def delete(deleteItem):
         try:
             db.session.delete(deleteItem)
             db.session.commit()
         except SQLAlchemyError as e:
-            db.rollback()
+            db.session.rollback()
             # log error and/or notify
             print(f"Database error occurred: {e}")
 
@@ -73,9 +82,7 @@ class Sums():
 
     def balance():
         try:
-            
             return (Sums.total('incomes')+Sums.total('investments')+Sums.total('assets'))-(Sums.total('expenses')+Sums.total('withholdings'))
-        
         except SQLAlchemyError as e:
             db.session.rollback()
             # log error and/or notify

@@ -24,6 +24,6 @@ Savings Slider, a slide bar that changes how much can and should be saved in a i
 ## Notes
 
 This was created to be simiple but useful to me, it is a work in progress and I'll maintain this as long as I am using it. 
-This project is the first time I'm using HTML in 15 years and I've not used Flask before. SQLAlchemy is also anew library for me.  
+This project is the first time I'm using HTML in 15 years and I've not used Flask before. SQLAlchemy is also a new library for me.  
 
 

@@ -1,17 +1,17 @@
 # Libraries 
 import logging
-from flask import render_template, jsonify, request
+from flask import Blueprint, current_app, render_template, jsonify, request
 
 # Local imports
-from app import create_app
-from models import db, Income, Expense, Investments, Withholdings, Assets
-from calc import Functions, Sums
+# from .__init__ import db
+from .models import Income, Expense, Investments, Withholdings, Assets
+from .calc import Functions, Sums
 
 logging.basicConfig(filename='error.log', level=logging.ERROR)
 
-app = create_app()
+bp = Blueprint('bp', __name__)
 
-@app.route('/')
+@bp.route('/')
 def index():
     data = {}
     processes = [Income, Expense, Investments, Withholdings, Assets]
@@ -22,7 +22,7 @@ def index():
     data['total'] = "${:,.2f}".format(Sums.balance())
     return render_template('index.html', data=data)
 
-@app.route('/table')
+@bp.route('/table')
 def overview():
     data = {}
     processes = [Income, Expense, Investments, Withholdings, Assets]
@@ -47,7 +47,7 @@ def overview():
     # data['total'] = "${:,.2f}".format(Sums.balance())
     return render_template('overview.html', data=data)
 
-@app.route('/add', methods=['GET', 'POST'])
+@bp.route('/add', methods=['GET', 'POST'])
 def add_item():
     data = request.get_json()
     # Update the db
@@ -55,7 +55,7 @@ def add_item():
     return jsonify({"message": f"${data['type']} added"}), 200
 
 
-@app.route('/edit/<int:id>', methods=['POST'])
+@bp.route('/edit/<int:id>', methods=['POST'])
 def edit_item(id):
     data = request.get_json()
     process = data.get('type')
@@ -75,11 +75,11 @@ def edit_item(id):
     item.description = data['description']
     item.amount = data['amount']
     item.frequency =  data['frequency']
-    db.session.commit()
+    Functions.edit(item)
     return jsonify({"message": "${process} updated"}), 200
 
 
-@app.route('/delete/<int:id>', methods=['POST'])
+@bp.route('/delete/<int:id>', methods=['POST'])
 def delete_item(id):
     data = request.get_json()
     match data.get('type'):
@@ -96,19 +96,18 @@ def delete_item(id):
     return jsonify({"message": "${process} deleted"}), 200
 
 
-# @app.errorhandler(404)
-# def page_not_found(e):
-#     return render_template('errors/404.html'), 404
+@bp.errorhandler(404)
+def page_not_found(e):
+    current_app.logger.error(f"An error occurred: {e}")
+    return render_template('errors/404.html'), 404
 
-# @app.errorhandler(500)
-# def internal_server_error(e):
-#     return render_template('errors/500.html'), 500
+@bp.errorhandler(500)
+def internal_server_error(e):
+    current_app.logger.error(f"An error occurred: {e}")
+    return render_template('errors/500.html'), 500
 
-# @app.errorhandler(Exception)
+# @bp.errorhandler(Exception)
 # def handle_exception(e):
 #     # log the error
-#     app.logger.error(f"An error occurred: {e}")
+#     current_app.logger.error(f"An error occurred: {e}")
 #     return render_template('errors/error.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)

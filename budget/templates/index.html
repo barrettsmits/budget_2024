@@ -1,23 +1,31 @@
+<!-- FILEPATH: /c:/Users/larry/src/budget_2024/budget/templates/index.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Annual Budget Report</title>
-    <!-- External Custom CSS -->
+    
+    <!-- External CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
     <link href="/static/css/style.css" rel="stylesheet">
 </head>
 <body>
-
+    <!-- Navigation -->
     <ul class="nav">
-        <li><a href="/" >Home</a></li>
+        <li><a href="/">Home</a></li>
         <li><a href="/table">Data View</a></li>
         <li><a href="/about">About</a></li>
     </ul>
+    
+    <!-- Header -->
     <header>
         <h1 class="cool-heading h1">Budget Report</h1>
     </header>
+    
+    <!-- Main Content -->
     <div class="container">
         <h2 class="cool-heading h2">Revenues:</h2>
         <h3 class="cool-heading h3">Total Income:</h3>
@@ -34,8 +42,7 @@
         <h2 class="cool-heading h2">Tangible Assets</h2>
         <p>{{ data.output_assets }}</p>
         <br>  
-        <h2 class="cool-heading h2" title="Total of revenues and assets minus expenditures">Total Net Worth:
-        </h2>
+        <h2 class="cool-heading h2" title="Total of revenues and assets minus expenditures">Total Net Worth:</h2>
         <p>{{ data.total }}</p>
         <br>
     </div>

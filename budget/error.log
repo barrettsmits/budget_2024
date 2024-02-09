@@ -1,1 +1,0 @@
-ERROR:flask_migrate:Error: Path doesn't exist: 'C:\\Users\\larry\\src\\budget_2024\\budget\\migrations'.  Please use the 'init' command to create a new scripts folder.
