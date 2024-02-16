@@ -5,7 +5,7 @@ from flask import Blueprint, current_app, render_template, jsonify, request
 # Local imports
 # from .__init__ import db
 from .models import Income, Expense, Investments, Withholdings, Assets
-from .calc import Functions, Sums
+from .calc import Functions, Sums, Reports
 
 logging.basicConfig(filename='error.log', level=logging.ERROR)
 
@@ -19,7 +19,7 @@ def index():
     for process in processes:
         process_sum = Sums.total(process.__tablename__)
         data["output_" + process.__tablename__] = "${:,.2f}".format(process_sum)
-    data['total'] = "${:,.2f}".format(Sums.balance())
+    data['net_worth'] = "${:,.2f}".format(Sums.net_worth())
     return render_template('index.html', data=data)
 
 @bp.route('/table')
@@ -44,8 +44,17 @@ def overview():
         data[process.__tablename__] = formatted_records
         process_sum = Sums.total(process.__tablename__)
         data["output_" + process.__tablename__] = "${:,.2f}".format(process_sum)
-    # data['total'] = "${:,.2f}".format(Sums.balance())
     return render_template('overview.html', data=data)
+
+@bp.route('/api/data')
+def data_api():
+    data = Reports.get_report() 
+    return jsonify(data)
+
+@bp.route('/savings', methods=['GET'])
+def savings():
+    return render_template('savings.html')
+
 
 @bp.route('/add', methods=['GET', 'POST'])
 def add_item():

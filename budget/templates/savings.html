@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Savings</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        savings-chart-container {
+          position: absolute;
+          width: 400px;
+          height: 400px;
+        }
+        savings-chart-container canvas{
+          display: block;
+          margin: auto;
+        }
+        /* Basic Slider Styling */
+        input[type=range] {
+          appearance: none;
+          width: 100%;
+          margin: 10px 0;
+          background-color: transparent;
+        }
+
+        /* Slider Thumb (Control) */
+        input[type=range]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 25px;  /* Width of the thumb */
+          height: 25px; /* Height of the thumb */
+          background: #4CAF50;
+          cursor: pointer;
+        }
+
+        input[type=range]::-moz-range-thumb {
+          width: 25px;
+          height: 25px;
+          background: #4CAF50;
+          cursor: pointer;
+        }
+
+        /* Slider Track */
+        input[type=range]::-webkit-slider-runnable-track {
+          width: 100%;
+          height: 25px;
+          background: #ddd;
+          border: none;
+          border-radius: 3px;
+        }
+
+        input[type=range]::-moz-range-track {
+          width: 100%;
+          height: 8px;
+          background: #ddd;
+          border: none;
+          border-radius: 3px;
+        }
+
+        /* Optional: Slider Track Ticks (simulated using a gradient background)
+        input[type=range] {
+          background: linear-gradient(to right, 
+              #4CAF50 0%, #4CAF50 2%, 
+              #ddd 2%, #ddd 5%, 
+              #4CAF50 5%, #4CAF50 10%,
+              /* Repeat for each tick mark
+              #ddd 95%, #ddd 98%,
+              #4CAF50 98%, #4CAF50 100%);
+          background-size: 100% 25px;
+        } */
+
+        .slider-container {
+          /* ... your existing styles ... */
+          position: relative;
+        }
+
+        .slider-ticks {
+          position: relative;
+          display: flex;
+          justify-content: space-between;
+          margin-top: 10px;
+        }
+
+        .tick {
+          transform: translateX(30%);
+        }
+        .tick:first-child {
+          position: flex-start;
+          left: 0;
+        }
+
+        .tick:last-child {
+          position: flex-end;
+          right: 0;
+        }
+        #slider-percentage {
+            position: relative;
+            margin-top: -30px; /* Adjust as needed */
+            text-align: center;
+            width: 40px; /* Ensure this is wide enough */
+            bottom: 30px;    /* Initial position */
+        }
+
+    </style>
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Nav Bar -->
+  <nav>
+      <ul class="nav">
+          <li><a href="/">Home</a></li>
+          <li><a href="/table">Data View</a></li>
+          <li><a href="/about">About</a></li>
+      </ul>
+  </nav>
+  <header>
+      <h1 class="cool-heading h1">Savings Overview</h1>
+  </header>  
+  <!-- Main Content -->
+  
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="cool-heading h2">Savings Chart</h2>
+        <p>Adjusted Income is income minus expenses and withholdings.</p>
+        <div id="savings-chart-container">
+          <canvas id="savings-chart"></canvas>
+        </div>
+        <br>
+        <div class="slider-container">
+          <input type="range" id="savings-slider" min="0" max="100" step="1">
+          <div id="slider-percentage">0%</div> <!-- Element to display the percentage -->
+          <div class="slider-ticks">
+            <span class="tick" style="left:0%">0</span>
+            <span class="tick" style="left:25%">25</span>
+            <span class="tick" style="left:50%">50</span>
+            <span class="tick" style="left:75%">75</span>
+            <span class="tick" style="left:100%">100</span>
+          </div>
+          <!-- <div id="slider-value">50</div> -->
+      </div>
+    </div>
+  </div>
+  <!-- <label for="savings-slider">Optimal Savings:</label>
+  <input type="range" id="savings-slider" min="0" max="100" step="1"> -->
+  
+  <br>
+  <br>
+  <p>Use the slider to adjust the percentage of your income you want to save.</p>
+  <br>
+  <h3 id="savings-display">Savings: $0.00</h3>
+  <h3 id="income-display">Remaining Income: $0.00</h3>
+  <!-- <h3 id="savings-percentage">Savings Percentage: 0%</h3> -->
+  <script>
+    const savingsData = {
+      labels: ['Savings', 'Adjusted Income '],
+      datasets: [{
+        data: [0, 100],
+        backgroundColor: ['#FF6384','#36A2EB'] 
+      }]
+    };
+
+    const savingsChart = new Chart(document.getElementById('savings-chart'), {
+      type: 'pie',
+      data: savingsData,
+      options: {
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                let label = context.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                const value = context.parsed;
+                const total = context.chart._metasets[context.datasetIndex].total;
+                const percentage = Math.floor(((value / total) * 100) + 0.5);
+                label += `$${value.toLocaleString()} (${percentage}%)`;
+                return label;
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    const savingsSlider = document.getElementById('savings-slider');
+    savingsSlider.value = 0
+    document.addEventListener('DOMContentLoaded', function() {
+      fetch('/api/data')
+      .then(response => response.json())
+      .then(data => {
+          const totalIncome = data['adjusted_total'];
+          const savingsSlider = document.getElementById('savings-slider');
+          const savingsPercentageDisplay = document.getElementById('savings-percentage');
+          const incomeDisplay = document.getElementById('income-display');
+          const savingsDisplay = document.getElementById('savings-display');
+
+          function updateChartAndDisplays(savingsPercentage) {
+              let savingsDollarAmount = totalIncome * (savingsPercentage / 100);
+              let remainingIncome = totalIncome - savingsDollarAmount;
+
+              savingsData.datasets[0].data = [savingsDollarAmount, remainingIncome];
+              savingsChart.update();
+
+              // savingsPercentageDisplay.textContent = `Savings Percentage: ${savingsPercentage}%`;
+              savingsDisplay.textContent = `Savings: $${savingsDollarAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+              incomeDisplay.textContent = `Remaining Income: $${remainingIncome.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          }
+
+          // Initial update
+          updateChartAndDisplays(savingsSlider.value);
+
+          savingsSlider.addEventListener('input', () => {
+              updateChartAndDisplays(savingsSlider.value);
+          });
+      })
+      .catch(error => console.error('Error:', error));  
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        var slider = document.getElementById('savings-slider');
+        var sliderPercentage = document.getElementById('slider-percentage');
+        var sliderContainer = slider.offsetParent; // Get the slider container
+
+        function updateSliderPercentage() {
+            var sliderValue = slider.value;
+            var percentage = (sliderValue - slider.min) / (slider.max - slider.min);
+            var thumbOffset = percentage * (slider.offsetWidth - sliderPercentage.offsetWidth);
+            sliderPercentage.style.left = (thumbOffset) + 'px';
+            // sliderPercentage.style.left = (sliderContainer.offsetLeft + thumbOffset) + 'px';
+            sliderPercentage.textContent = sliderValue + '%';
+        }
+
+        // Initial call to position the percentage correctly
+        updateSliderPercentage();
+
+        slider.addEventListener('input', updateSliderPercentage);
+    });
+
+    
+    </script>
+</body>
+</html>

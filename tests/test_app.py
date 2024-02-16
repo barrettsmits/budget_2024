@@ -2,8 +2,7 @@ import os
 import unittest
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from budget.app import create_app
+from budget.__init__ import create_app
 
 class AppTestCase(unittest.TestCase):
     def setUp(self):
@@ -20,9 +19,9 @@ class AppTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def test_create_app_development(self):
-        os.environ['FLASK_ENV'] = 'development'
+        #os.environ['FLASK_ENV'] = 'testing'
         app = create_app()
-        self.assertEqual(app.config['ENV'], 'development')
+        self.assertEqual(app.config['ENV'], 'testing')
 
     # def test_create_app_production(self):
     #     os.environ['FLASK_ENV'] = 'production'

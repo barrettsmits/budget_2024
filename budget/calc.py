@@ -80,9 +80,31 @@ class Sums():
             print(f"Database error occurred: {e}")
 
 
-    def balance():
+    def net_worth():
         try:
             return (Sums.total('incomes')+Sums.total('investments')+Sums.total('assets'))-(Sums.total('expenses')+Sums.total('withholdings'))
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            # log error and/or notify
+            print(f"Database error occurred: {e}")
+    
+    def adjusted_total():
+        try:
+            return Sums.total('incomes')-(Sums.total('expenses')+Sums.total('withholdings'))
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            # log error and/or notify
+            print(f"Database error occurred: {e}")
+
+class Reports():
+    def get_report():
+        try:
+            return {
+                # "expenses": Sums.total('expenses'),
+                "incomes": Sums.total('incomes'),
+                # "withholdings": Sums.total('withholdings'),
+                "adjusted_total": Sums.adjusted_total()
+            }
         except SQLAlchemyError as e:
             db.session.rollback()
             # log error and/or notify
