@@ -3,8 +3,7 @@ import logging
 from flask import Blueprint, current_app, render_template, jsonify, request
 
 # Local imports
-# from .__init__ import db
-from .models import Income, Expense, Investments, Withholdings, Assets
+from .models import db, Income, Expense, Investments, Withholdings, Assets
 from .calc import Functions, Sums, Reports
 
 logging.basicConfig(filename='error.log', level=logging.ERROR)
@@ -28,7 +27,7 @@ def overview():
     processes = [Income, Expense, Investments, Withholdings, Assets]
 
     for process in processes:
-        records = process.query.all()
+        records = db.session.execute(db.select(process)).scalars().all()
         formatted_records = []
 
         for record in records:
@@ -70,15 +69,15 @@ def edit_item(id):
     process = data.get('type')
     match process:
         case "expense":
-            item = Expense.query.get(id)
+            item = db.session.get(Expense, id)
         case "income":
-            item = Income.query.get(id)
+            item = db.session.get(Income, id)
         case "investment":
-            item = Investments.query.get(id)
+            item = db.session.get(Investments, id)
         case "asset":
-            item = Assets.query.get(id)
+            item = db.session.get(Assets, id)
         case "withholding":
-            item = Withholdings.query.get(id)
+            item = db.session.get(Withholdings, id)
     
     # Update the db
     item.description = data['description']
@@ -93,15 +92,15 @@ def delete_item(id):
     data = request.get_json()
     match data.get('type'):
         case "expense":
-            Functions.delete(Expense.query.get(id))
+            Functions.delete(db.session.get(Expense, id))
         case "income":
-            Functions.delete(Income.query.get(id))
+            Functions.delete(db.session.get(Income, id))
         case "investment":
-            Functions.delete(Investments.query.get(id))
+            Functions.delete(db.session.get(Investments, id))
         case "asset":
-            Functions.delete(Assets.query.get(id))
+            Functions.delete(db.session.get(Assets, id))
         case "withholding":
-            Functions.delete(Withholdings.query.get(id))
+            Functions.delete(db.session.get(Withholdings, id))
     return jsonify({"message": "${process} deleted"}), 200
 
 
