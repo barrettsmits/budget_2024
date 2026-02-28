@@ -27,7 +27,7 @@ def overview():
     processes = [Income, Expense, Investments, Withholdings, Assets]
 
     for process in processes:
-        records = process.query.all()
+        records = db.session.execute(db.select(process)).scalars().all()
         formatted_records = []
 
         for record in records:

@@ -1,5 +1,5 @@
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import case, func
+from sqlalchemy import case, func, select
 
 # local
 from budget.models import db, Income, Expense, Investments, Withholdings, Assets
@@ -65,15 +65,15 @@ class Sums():
         try:
             match table_name:
                 case "expenses":
-                    return Expense.query.with_entities(func.sum(Expense.amount * Sums.get_frequency_case(Expense))).scalar() or 0
+                    return db.session.execute(select(func.sum(Expense.amount * Sums.get_frequency_case(Expense)))).scalar() or 0
                 case "incomes":
-                    return Income.query.with_entities(func.sum(Income.amount * Sums.get_frequency_case(Income))).scalar() or 0
+                    return db.session.execute(select(func.sum(Income.amount * Sums.get_frequency_case(Income)))).scalar() or 0
                 case "investments":
-                    return Investments.query.with_entities(func.sum(Investments.amount)).scalar() or 0
+                    return db.session.execute(select(func.sum(Investments.amount))).scalar() or 0
                 case "assets":
-                    return Assets.query.with_entities(func.sum(Assets.amount)).scalar() or 0
+                    return db.session.execute(select(func.sum(Assets.amount))).scalar() or 0
                 case "withholdings":
-                    return Withholdings.query.with_entities(func.sum(Withholdings.amount * Sums.get_frequency_case(Withholdings))).scalar() or 0
+                    return db.session.execute(select(func.sum(Withholdings.amount * Sums.get_frequency_case(Withholdings)))).scalar() or 0
         except SQLAlchemyError as e:
             db.session.rollback()
             # log error and/or notify
